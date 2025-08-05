@@ -1,70 +1,117 @@
-# Getting Started with Create React App
+# Quiz App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A modern React-based quiz application that reads questions from Excel files and presents them in an interactive format.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- 📊 Reads questions from Excel (.xls) files
+- 🎯 Detects correct answers based on yellow background highlighting
+- 🎨 Beautiful, modern UI with smooth animations
+- 📱 Responsive design for mobile and desktop
+- 🔄 Random question selection
+- ✅ Immediate feedback on answers
+- 🚀 Ready for Vercel deployment
 
-### `npm start`
+## How it works
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+The app reads Excel files from the `public` folder and processes them to extract:
+- Questions (from the first column)
+- Multiple choice answers (from subsequent columns)
+- Correct answers (detected by yellow background highlighting)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Setup
 
-### `npm test`
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+2. **Add Excel files:**
+   - Place your Excel files in the `public` folder
+   - The app will automatically read files named `1.2.xls` and `1.3.xls`
+   - Make sure correct answers are highlighted with yellow background
 
-### `npm run build`
+3. **Run the development server:**
+   ```bash
+   npm start
+   ```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+4. **Build for production:**
+   ```bash
+   npm run build
+   ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Excel File Format
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Your Excel files should follow this format:
+- **Column A:** Questions
+- **Columns B-E:** Multiple choice answers
+- **Correct answer:** Highlighted with yellow background
 
-### `npm run eject`
+Example:
+```
+| Question | Answer A | Answer B | Answer C | Answer D |
+|----------|----------|----------|----------|----------|
+| What is 2+2? | 3 | 4 | 5 | 6 |
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Where "4" would be highlighted in yellow.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Deployment to Vercel
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+1. **Push to GitHub:**
+   ```bash
+   git add .
+   git commit -m "Initial commit"
+   git push origin main
+   ```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+2. **Deploy to Vercel:**
+   - Go to [vercel.com](https://vercel.com)
+   - Connect your GitHub repository
+   - Vercel will automatically detect it's a React app
+   - Deploy!
 
-## Learn More
+## Customization
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Adding more Excel files:
+1. Add your files to the `public` folder
+2. Update the `files` array in `src/App.js`:
+   ```javascript
+   const files = ['1.2.xls', '1.3.xls', 'your-new-file.xls'];
+   ```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Styling:
+- Modify `src/App.css` to change colors, fonts, and layout
+- The app uses CSS custom properties for easy theming
 
-### Code Splitting
+### Question processing:
+- The `processExcelData` function in `src/App.js` handles Excel parsing
+- You can modify the logic to match your specific Excel format
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Troubleshooting
 
-### Analyzing the Bundle Size
+### Excel files not loading:
+- Make sure files are in the `public` folder
+- Check that file names match exactly (case-sensitive)
+- Verify files are valid Excel format
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### Correct answers not detected:
+- Ensure correct answers have yellow background highlighting
+- Check Excel file format and structure
+- The app falls back to using the last answer if yellow highlighting isn't detected
 
-### Making a Progressive Web App
+### Build errors:
+- Run `npm install` to ensure all dependencies are installed
+- Check for any console errors in the browser developer tools
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## Technologies Used
 
-### Advanced Configuration
+- **React** - Frontend framework
+- **XLSX** - Excel file parsing
+- **CSS3** - Modern styling with animations
+- **Vercel** - Deployment platform
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## License
 
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+MIT License - feel free to use and modify as needed!
