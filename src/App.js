@@ -17,7 +17,9 @@ function App() {
   const [testQuestions, setTestQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [testResults, setTestResults] = useState(null);
-  const [testQuestionsCount, setTestQuestionsCount] = useState(80); // Configurable test questions count
+  const [testQuestionsCount, setTestQuestionsCount] = useState(5); // Configurable test questions count
+  const [userAnswers, setUserAnswers] = useState({}); // Track user answers in test mode
+  const [showWrongAnswers, setShowWrongAnswers] = useState(false); // Toggle to show wrong answers
 
   const loadQuestions = useCallback(async () => {
     try {
@@ -90,6 +92,8 @@ function App() {
     setSelectedAnswer(null);
     setShowResult(false);
     setIsCorrect(false);
+    setUserAnswers({});
+    setShowWrongAnswers(false);
 
     if (selectedTestQuestions.length > 0) {
       setCurrentQuestion(selectedTestQuestions[0]);
@@ -103,6 +107,12 @@ function App() {
       const correct = answerIndex === currentQuestion.correctAnswerIndex;
       setIsCorrect(correct);
       setShowResult(false); // Don't show result immediately in test mode
+
+      // Track user answer for this question
+      setUserAnswers(prev => ({
+        ...prev,
+        [currentQuestion.id]: answerIndex
+      }));
 
       // Update the answer for the current question
       const newAnsweredQuestions = new Set([...answeredQuestions]);
@@ -197,11 +207,16 @@ function App() {
         // Test completed - check if all questions are answered
         if (totalAnswered >= testQuestions.length) {
           const percentage = (correctAnswers / totalAnswered) * 100;
+          const wrongAnsweredQuestions = testQuestions.filter(q => {
+            const userAnswer = userAnswers[q.id];
+            return userAnswer !== undefined && userAnswer !== q.correctAnswerIndex;
+          });
           setTestResults({
             correct: correctAnswers,
             total: totalAnswered,
             percentage: percentage,
-            passed: percentage >= 70
+            passed: percentage >= 70,
+            wrongQuestions: wrongAnsweredQuestions
           });
         } else {
           // If not all questions are answered, stay on current question
@@ -239,6 +254,8 @@ function App() {
     setSelectedAnswer(null);
     setShowResult(false);
     setIsCorrect(false);
+    setUserAnswers({});
+    setShowWrongAnswers(false);
 
     if (testMode) {
       initializeTestMode();
@@ -281,6 +298,8 @@ function App() {
     setSelectedAnswer(null);
     setShowResult(false);
     setIsCorrect(false);
+    setUserAnswers({});
+    setShowWrongAnswers(false);
   };
 
   if (loading) {
@@ -404,6 +423,60 @@ function App() {
                 {testResults.passed ? 'PASSED' : 'FAILED'}
               </p>
             </div>
+            
+            {testResults.wrongQuestions && testResults.wrongQuestions.length > 0 && (
+              <div className="wrong-answers-section">
+                <button 
+                  className="toggle-wrong-answers"
+                  onClick={() => setShowWrongAnswers(!showWrongAnswers)}
+                >
+                  {showWrongAnswers ? 'Hide' : 'Show'} Wrong Answers ({testResults.wrongQuestions.length})
+                </button>
+                
+                {showWrongAnswers && (
+                  <div className="wrong-questions-list">
+                    <h3>Questions Answered Incorrectly:</h3>
+                    {testResults.wrongQuestions.map((question, index) => (
+                      <div key={question.id} className="wrong-question-item">
+                        <div className="question-header">
+                          <div className="question-group">{question.questionGroup}</div>
+                          <div className="source-file">Source: {question.sourceFile}</div>
+                        </div>
+                        <h4 className="question">{question.question}</h4>
+                        <div className="answers">
+                          {question.answers.map((answer, answerIndex) => {
+                            const isUserAnswer = userAnswers[question.id] === answerIndex;
+                            const isCorrectAnswer = answerIndex === question.correctAnswerIndex;
+                            let className = 'answer-button';
+                            
+                            if (isUserAnswer && isCorrectAnswer) {
+                              className += ' correct';
+                            } else if (isUserAnswer && !isCorrectAnswer) {
+                              className += ' incorrect';
+                            } else if (isCorrectAnswer) {
+                              className += ' correct';
+                            }
+                            
+                            return (
+                              <button
+                                key={answerIndex}
+                                className={className}
+                                disabled={true}
+                              >
+                                {answer}
+                                {isUserAnswer && <span className="user-answer-indicator"> (Your Answer)</span>}
+                                {isCorrectAnswer && <span className="correct-answer-indicator"> (Correct)</span>}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+            
             <button className="reset-button" onClick={resetProgress}>
               Retake Test
             </button>
