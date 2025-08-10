@@ -17,7 +17,7 @@ function App() {
   const [testQuestions, setTestQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [testResults, setTestResults] = useState(null);
-  const [testQuestionsCount, setTestQuestionsCount] = useState(5); // Configurable test questions count
+  const [testQuestionsCount, setTestQuestionsCount] = useState(80); // Configurable test questions count
   const [userAnswers, setUserAnswers] = useState({}); // Track user answers in test mode
   const [showWrongAnswers, setShowWrongAnswers] = useState(false); // Toggle to show wrong answers
 
